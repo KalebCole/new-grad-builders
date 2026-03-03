@@ -1,13 +1,13 @@
 # Getting Started — New Grad Builders Session 1
 
-> **Point your Copilot at this doc and say: "do this for me"**
+> **Point your Copilot at this doc and say: "do this for me." Seriously, that's it.**
 
-## Prerequisites Checklist
+## What You Need
 
 - [ ] **Personal GitHub account** linked to Microsoft org — go to [aka.ms/copilot](https://aka.ms/copilot) and link your personal account
-- [ ] **GitHub Copilot** enabled — unlimited access via your Microsoft org membership (verify at [github.com/settings/copilot](https://github.com/settings/copilot))
-- [ ] **Azure subscription** with free credits — check via [portal.azure.com](https://portal.azure.com) → Cost Management
-- [ ] **Telegram** installed on your phone ([telegram.org](https://telegram.org))
+- [ ] **GitHub Copilot** enabled — you get unlimited access through Microsoft, just make sure it's on at [github.com/settings/copilot](https://github.com/settings/copilot)
+- [ ] **Azure subscription** with free credits — check at [portal.azure.com](https://portal.azure.com) → Cost Management
+- [ ] **Telegram** on your phone ([telegram.org](https://telegram.org))
 - [ ] **SSH client** — Terminal (Mac/Linux), Windows Terminal, or [Termius](https://termius.com) on your phone
 
 ## Quick Start (5 minutes)
@@ -24,7 +24,7 @@ az vm create \
   --generate-ssh-keys
 ```
 
-### 2. SSH in and run the setup script
+### 2. SSH in and run setup
 
 ```bash
 ssh azureuser@<your-vm-ip>
@@ -46,9 +46,9 @@ sudo /root/inject-env.sh openclaw onboard
    sudo sh -c 'echo "TELEGRAM_BOT_TOKEN=<your-token>" >> /root/.openclaw-env'
    ```
 
-### 5. Connect Google Calendar (optional)
+### 5. Connect Google Calendar (optional but cool)
 
-Install [gogcli](https://github.com/steipete/gogcli) — Google in your terminal (Calendar, Gmail, Drive, Contacts, Tasks):
+Grab [gogcli](https://github.com/steipete/gogcli) — it puts Google Calendar, Gmail, Drive, Contacts, and Tasks in your terminal:
 
 ```bash
 # On Linux VM (build from source)
@@ -60,7 +60,7 @@ sudo cp bin/gog /usr/local/bin/
 brew install steipete/tap/gogcli
 ```
 
-Set up Google OAuth (or tell your agent: *"Set up Google Calendar integration via GCP CLI"*):
+Set up Google OAuth (or just tell your agent: *"Set up Google Calendar integration via GCP CLI"* and let it figure it out):
 
 ```bash
 # Create project + enable APIs
@@ -78,12 +78,12 @@ gog account add --client-id <id> --client-secret <secret>
 
 ### 6. Secure your VM
 
-The setup script already handles firewall + user isolation. Extra credit:
+Setup already locks down the firewall and isolates users. Want extra credit?
 ```bash
 sudo tailscale up   # Mesh VPN — access your VM from anywhere securely
 ```
 
-## Post-Session: Things to Try
+## Now Go Break Stuff
 
 - Ask your agent: *"What's on my calendar today?"*
 - Ask your agent: *"Summarize my unread emails"*
@@ -113,6 +113,6 @@ sudo tailscale up   # Mesh VPN — access your VM from anywhere securely
 | Can't SSH from phone | Install Termius, use your Tailscale IP instead of public IP |
 | Agent seems slow | Make sure your personal GitHub is linked via [aka.ms/copilot](https://aka.ms/copilot) for unlimited access |
 
-## Need Help?
+## Stuck?
 
-Drop a message in the **New Grad Builders** Teams chat. Someone's probably hit the same issue.
+Drop a message in the **New Grad Builders** Teams chat. Someone's probably hit the same wall.

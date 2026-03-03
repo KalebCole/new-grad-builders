@@ -5,7 +5,7 @@
 ### 🏗️ "What I Built This Week"
 - **Format:** Rotating 10-min demos, 2-3 per session
 - **Cadence:** Every other session or monthly
-- **Goal:** Low-pressure way to share, normalize building in public
+- **Goal:** Low-pressure way to share — get people comfortable showing their work
 
 ### ⚔️ MCP vs CLI-First Agents
 - **Format:** Debate / comparison with live demos
@@ -28,12 +28,12 @@
 
 - **Building CLI skills for Copilot** — how Kaleb built 59+ skills
 - **Self-hosting AI models** — Ollama on Azure VMs, local inference
-- **Telegram/Discord bot deep dive** — building rich conversational interfaces
+- **Telegram/Discord bot deep dive** — building bots people actually want to talk to
 - **AI for job hunting** — resume optimization, interview prep, networking automation
 - **Open source contributions** — how to find good first issues, build your GitHub profile
 - **Guest speakers** — invite people from Microsoft AI teams, GitHub Copilot team, etc.
 - **Security for AI agents** — prompt injection, secrets management, blast radius containment
-- **AI-assisted career growth** — using AI for connects, reviews, and career planning
+- **AI for career growth** — using AI for connects, reviews, and career planning
 
 ## How to Propose a Session
 
@@ -46,4 +46,4 @@
 - **Builders > Watchers** — every session should have something hands-on
 - **Personal > Corporate** — focus on what you'd build for yourself, not work deliverables
 - **Rotate presenters** — Kaleb and Kevin won't present every time
-- **Record everything** — async viewers are first-class citizens
+- **Record everything** — people watching async should get the full experience

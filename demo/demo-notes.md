@@ -1,6 +1,6 @@
 # Demo Notes — Session 1: Autonomous AI Agents
 
-> Presenter reference only. These are the step-by-step commands and talking points for the live walkthrough.
+> My cheat sheet for the live demo. Commands to run + what to say.
 
 ## Pre-Demo Checklist
 
@@ -19,7 +19,7 @@
 - Open Telegram on phone → show agent conversation
 - Show the car-hunting results ("Here's what my agent found overnight")
 - Show calendar summary ("It checked my calendar at 7 AM and texted me a briefing")
-- Frame: "All of this is running on a $0/month Azure VM. Let me show you how."
+- Hit them with: "All of this is running on a $0/month Azure VM. Let me show you how."
 
 ---
 
@@ -210,11 +210,11 @@ npm install -g @anthropics/claude-code
 ## PART 3: DISCUSSION (15 min)
 
 ### Opening:
-- "I gave this presentation because I wanted to showcase what I'm building and learning"
-- "I'm not going to be the only one presenting — this is your community"
+- "I put this together to show you what I've been building"
+- "I don't want to be the only one up here — this is everyone's thing"
 
 ### Discussion prompts:
-1. "What would you build with a 24/7 agent? What problems would you solve?"
+1. "What would you actually build with a 24/7 agent?"
 2. "What should this group become? Weekly? Biweekly? Rotating presenters?"
 3. "Who wants to present next? You don't have to go as deep as I did."
 

@@ -238,17 +238,17 @@ Kaleb Cole & Kevin Granados | March 2026
 
 - The setup script handles: Node.js, OpenClaw, user isolation, firewall, Tailscale
 - Then we run `openclaw onboard` to configure the agent
-- OpenClaw creates a workspace with markdown files that define your agent's personality and knowledge
+- OpenClaw creates a workspace with markdown files that tell the agent who it is and what it knows
 
-> *Key insight: OpenClaw reads USER.md, AGENTS.md, and SOUL.md at the start of every session. The more context you give it, the better it works.*
+> *OpenClaw reads USER.md, AGENTS.md, and SOUL.md every time it starts. Throw everything in there — the more context it has, the less dumb it acts.*
 
 ---
 
 ## Step 4: Messaging + Data Sources
 
-### Give your agent a way to talk to you and see your world
+### Give your agent a way to talk to you and access your stuff
 
-**Messaging:** Create a Telegram bot via @BotFather — dedicated window, separate from personal chat
+**Messaging:** Create a Telegram bot via @BotFather — gives you a dedicated chat window that's separate from your personal stuff
 
 **Data sources:** Use [gogcli](https://github.com/steipete/gogcli) by Peter Steinberger
 - Google Calendar, Gmail, Drive, Contacts, Tasks — all from the terminal
@@ -257,7 +257,7 @@ Kaleb Cole & Kevin Granados | March 2026
 ### Live demo
 ```
 You: "What's on my calendar today?"
-Agent: "You have 3 meetings: standup at 9, 1:1 with Lenny at 11..."
+Agent: "You have 2 meetings: standup at 9, 1:1 at 11..."
 ```
 
 ---
@@ -296,25 +296,25 @@ Agent: "You have 3 meetings: standup at 9, 1:1 with Lenny at 11..."
 
 ### This is a community, not a lecture series
 
-- *"I gave this presentation because I wanted to showcase what I'm building and learning"*
-- *"I'm not going to be the only one presenting — this is YOUR community"*
+- *"I built this talk because I wanted to show you what I'm actually doing — not theory, real stuff"*
+- *"And I don't want to be the only one up here. This is your community too."*
 
 ### Let's talk:
-- 🤔 **What would you build?** What problems would you solve with a 24/7 agent?
-- 🔮 **What should this group become?** Weekly? Biweekly? What format?
-- 🎤 **Who wants to present next?** Show & tell, deep dives, hackathons?
+- 🤔 **What would you build?** If you had a thing running 24/7 doing stuff for you, what's the first problem you'd throw at it?
+- 🔮 **What should this group be?** Weekly? Biweekly? Slack-first? What actually works for you?
+- 🎤 **Who's going next?** Seriously — show & tell, deep dives, whatever. Volunteer.
 
 ### Future session ideas:
 - "What I Built This Week" — rotating 10-min demos
-- MCP vs CLI-first agents — the great debate
-- Playwright browser automation for internal apps
-- "Automate Your Life" challenge
+- MCP vs CLI-first agents — fight me on this one
+- Playwright browser automation for internal Microsoft apps
+- "Automate Your Life" challenge — winner gets bragging rights
 
 ---
 
 ## Get Started Now
 
-### Point your Copilot at the getting started doc and say: "do this for me"
+### Point your Copilot at the getting started doc and tell it: "do this for me"
 
 1. 📄 **Getting Started Doc:** `docs/getting-started.md` in this repo
 2. 🛠️ **Setup Script:** `demo/setup-openclaw-vm.sh`
@@ -327,4 +327,4 @@ Agent: "You have 3 meetings: standup at 9, 1:1 with Lenny at 11..."
 - 🐾 [ClawHub](https://clawhub.com) — OpenClaw skill registry
 - 📚 [awesome-copilot](https://github.com/github/awesome-copilot) — Agents, skills, hooks, recipes
 
-> *"The best time to start building with AI agents was yesterday. The second best time is right now."*
+> *"You have free compute, free model access, and a weekend. Go build something."*
