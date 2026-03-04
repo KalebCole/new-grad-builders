@@ -1,10 +1,10 @@
 # New Grad Builders 🤖
 
-A community for Microsoft new grads who want to build with AI agents outside of work — and bring those skills in.
+A community for Microsoft new grads who want to build with AI agents outside of work — and bring that back to the day job.
 
 ## What Is This?
 
-Open, hands-on sessions where new grads share practical AI tools, build automations, and learn from each other. Not a lecture series — a builder community.
+Hands-on sessions where new grads share AI tools they're actually using, build automations, and learn from each other. Not a lecture series — a builder community.
 
 **Organizers:** Kaleb Cole & Kevin Granados
 
