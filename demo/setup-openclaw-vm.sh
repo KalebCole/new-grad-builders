@@ -16,7 +16,10 @@ apt-get update -qq && apt-get upgrade -y -qq
 
 # --- 2. Install essentials ---
 echo "[2/11] Installing essential tools..."
-apt-get install -y -qq \
+# Pre-seed iptables-persistent to avoid interactive prompts during curl|bash
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
   curl wget git unzip jq htop tmux \
   build-essential ca-certificates gnupg lsb-release \
   fail2ban iptables-persistent
@@ -37,9 +40,10 @@ echo "  OpenClaw $(openclaw --version 2>/dev/null || echo 'installed') ready"
 
 # --- 5. Install Chromium + Xvfb + nodriver (headed browser on a headless VM) ---
 echo "[5/11] Installing Chromium + Xvfb + nodriver..."
-apt-get install -y -qq xvfb python3-pip
+apt-get install -y -qq xvfb python3-pip snapd
+snap wait system seed.loaded 2>/dev/null || true
 snap install chromium
-pip3 install --quiet nodriver>=0.38
+pip3 install --quiet --break-system-packages "nodriver>=0.38"
 # Create a systemd service for Xvfb so the virtual display persists
 cat > /etc/systemd/system/xvfb.service << 'XVFB'
 [Unit]
@@ -170,7 +174,9 @@ echo "  openclaw.service created (not enabled yet — run onboard first)"
 
 # --- 8. SSH hardening ---
 echo "[9/11] Hardening SSH configuration..."
-cat > /etc/ssh/sshd_config.d/99-hardened.conf << 'SSHCONFIG'
+# Detect the admin user who is running this script
+SSH_ADMIN_USER="${SUDO_USER:-$(logname 2>/dev/null || echo azureuser)}"
+cat > /etc/ssh/sshd_config.d/99-hardened.conf << SSHCONFIG
 # New Grad Builders — SSH Hardening
 # Applied on top of default sshd_config
 
@@ -192,7 +198,7 @@ X11Forwarding no
 AllowTcpForwarding no
 
 # Restrict to the admin user only
-AllowUsers azureuser
+AllowUsers ${SSH_ADMIN_USER}
 
 # Modern crypto only
 KexAlgorithms curve25519-sha256@libssh.org,curve25519-sha256
@@ -201,9 +207,9 @@ MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 SSHCONFIG
 
 # Validate config before restarting
-if sshd -t 2>/dev/null; then
+if sshd -t; then
   systemctl restart sshd
-  echo "  SSH hardened: root login disabled, key-only auth, modern crypto"
+  echo "  SSH hardened: root login disabled, key-only auth, AllowUsers=${SSH_ADMIN_USER}"
 else
   echo "  WARNING: SSH config validation failed — reverting"
   rm -f /etc/ssh/sshd_config.d/99-hardened.conf
@@ -228,6 +234,7 @@ echo "[11/11] Final hardening + Tailscale..."
 # This blocks SSRF attacks from reaching the Azure Instance Metadata Service
 iptables -A OUTPUT -d 168.63.129.16 -m owner ! --uid-owner 0 -m state --state NEW -j DROP
 # Persist the rule across reboots
+systemctl enable --now netfilter-persistent 2>/dev/null || true
 netfilter-persistent save 2>/dev/null || true
 echo "  Azure metadata endpoint locked down (root-only access)"
 
