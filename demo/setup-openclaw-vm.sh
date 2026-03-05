@@ -143,19 +143,21 @@ Environment=DISPLAY=:99
 
 # Secrets: systemd reads root-owned files, exposes via tmpfs-backed $CREDENTIALS_DIRECTORY
 # Add more LoadCredential lines as you add secrets to /etc/openclaw/secrets/
-LoadCredential=anthropic_key:/etc/openclaw/secrets/anthropic_key
+# Uncomment the next line if you have an Anthropic API key:
+# LoadCredential=anthropic_key:/etc/openclaw/secrets/anthropic_key
 LoadCredential=telegram_token:/etc/openclaw/secrets/telegram_token
 # LoadCredential=openrouter_key:/etc/openclaw/secrets/openrouter_key
 # LoadCredential=github_pat:/etc/openclaw/secrets/github_pat
 # LoadCredential=openai_key:/etc/openclaw/secrets/openai_key
 
-ExecStart=/usr/bin/openclaw start
+ExecStart=/usr/bin/openclaw gateway --port 18789
 Restart=on-failure
 RestartSec=10
 
 # --- Process Sandboxing ---
 NoNewPrivileges=true
 ProtectSystem=strict
+ProtectHome=false
 PrivateTmp=true
 ProtectKernelTunables=true
 ProtectControlGroups=true
