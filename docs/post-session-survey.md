@@ -10,14 +10,9 @@ Pick all that apply:
 
 - [ ] 🎭 Browser automation & bot bypass (nodriver, Playwright, headed Chrome)
 - [ ] 🛠️ Building CLI skills / plugins for Copilot
-- [ ] 🧠 Self-hosting AI models (Ollama, local inference on Azure VMs)
-- [ ] 🤖 Telegram / Discord bot deep dive
-- [ ] 💼 AI for job hunting (resume optimization, interview prep, networking automation)
 - [ ] 🔐 Security for AI agents (prompt injection, secrets management, sandboxing)
-- [ ] 🏗️ Open source contributions (finding good first issues, building your GitHub profile)
-- [ ] ⚔️ MCP vs CLI-first agents (architecture debate + live demos)
+- [ ] ⚔️ MCP vs CLI (architecture debate + live demos)
 - [ ] 📈 AI for career growth (using AI for connects, reviews, career planning)
-- [ ] 🏠 Home automation with AI agents
 
 ---
 
@@ -60,4 +55,3 @@ _______________________________
 
 ---
 
-Thanks! 🚀 — Kaleb & Kevin
