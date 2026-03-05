@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Grad Builders — Feedback</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #111;
+    color: #fff;
+    font-family: Georgia, 'Times New Roman', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 640px;
+    width: 100%;
+  }
+  h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+  .question {
+    margin-bottom: 32px;
+  }
+  .question h2 {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .question .hint {
+    color: #999;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    padding: 12px 16px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .option:hover { background: #222; }
+  .option input { display: none; }
+  .option .check {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #444;
+    border-radius: 4px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .option input:checked ~ .check {
+    background: #fff;
+    border-color: #fff;
+  }
+  .option input:checked ~ .check::after {
+    content: '✓';
+    color: #111;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .option.radio .check { border-radius: 50%; }
+  .option.radio input:checked ~ .check::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #111;
+    border-radius: 50%;
+    display: block;
+  }
+  .option span { font-size: 15px; }
+  textarea {
+    width: 100%;
+    background: #1a1a1a;
+    color: #fff;
+    border: 2px solid #333;
+    padding: 14px 16px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    resize: vertical;
+    min-height: 100px;
+  }
+  textarea:focus { border-color: #666; outline: none; }
+  .name-input {
+    width: 100%;
+    background: #1a1a1a;
+    color: #fff;
+    border: 2px solid #333;
+    padding: 12px 16px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+  }
+  .name-input:focus { border-color: #666; outline: none; }
+  button[type="submit"] {
+    background: #fff;
+    color: #111;
+    border: none;
+    padding: 14px 40px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: opacity 0.15s;
+  }
+  button[type="submit"]:hover { opacity: 0.85; }
+  button[type="submit"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .success {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .success h1 { font-size: 32px; margin-bottom: 12px; }
+  .success p { color: #999; font-size: 16px; }
+  .error {
+    background: #331111;
+    color: #ff6666;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<div class="container" id="form-container">
+  <h1>New Grad Builders 🤖</h1>
+  <p class="subtitle">Quick feedback to shape future sessions. Takes ~1 minute.</p>
+
+  <div class="error" id="error-msg"></div>
+
+  <form id="survey-form">
+
+    <div class="question">
+      <h2>What topics are you most interested in?</h2>
+      <p class="hint">Pick all that apply</p>
+      <label class="option"><input type="checkbox" name="topics" value="Browser automation & bot bypass"><span class="check"></span><span>🎭 Browser automation & bot bypass</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="Building CLI skills for Copilot"><span class="check"></span><span>🛠️ Building CLI skills for Copilot</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="Security for AI agents"><span class="check"></span><span>🔐 Security for AI agents</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="MCP vs CLI-first agents"><span class="check"></span><span>⚔️ MCP vs CLI-first agents</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="AI for career growth"><span class="check"></span><span>📈 AI for career growth</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="Self-hosting AI models"><span class="check"></span><span>🧠 Self-hosting AI models</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="Telegram / Discord bot deep dive"><span class="check"></span><span>🤖 Telegram / Discord bot deep dive</span></label>
+      <label class="option"><input type="checkbox" name="topics" value="Open source contributions"><span class="check"></span><span>🏗️ Open source contributions</span></label>
+    </div>
+
+    <div class="question">
+      <h2>How do you want sessions structured?</h2>
+      <p class="hint">Pick one</p>
+      <label class="option radio"><input type="radio" name="format" value="Presentation"><span class="check"></span><span>🎤 Presentation — slides + demo walkthrough</span></label>
+      <label class="option radio"><input type="radio" name="format" value="Workshop"><span class="check"></span><span>🔧 Workshop — everyone codes along</span></label>
+      <label class="option radio"><input type="radio" name="format" value="Open forum"><span class="check"></span><span>💬 Open forum — casual discussion + Q&A</span></label>
+      <label class="option radio"><input type="radio" name="format" value="Mix it up"><span class="check"></span><span>🔀 Mix it up — different each session</span></label>
+    </div>
+
+    <div class="question">
+      <h2>What recurring segments would you want?</h2>
+      <p class="hint">Pick all that apply</p>
+      <label class="option"><input type="checkbox" name="segments" value="News & events"><span class="check"></span><span>📢 News & events</span></label>
+      <label class="option"><input type="checkbox" name="segments" value="Show & tell"><span class="check"></span><span>🏆 Show & tell — people demo what they built</span></label>
+      <label class="option"><input type="checkbox" name="segments" value="Hands-on build"><span class="check"></span><span>🛠️ Hands-on build time with guidance</span></label>
+      <label class="option"><input type="checkbox" name="segments" value="Q&A / open discussion"><span class="check"></span><span>💬 Q&A / open discussion</span></label>
+      <label class="option"><input type="checkbox" name="segments" value="Case study"><span class="check"></span><span>📚 Case study — deep dive into a real project</span></label>
+    </div>
+
+    <div class="question">
+      <h2>Would you present at a show & tell?</h2>
+      <p class="hint">Pick one</p>
+      <label class="option radio"><input type="radio" name="present" value="Yes — I have something to demo"><span class="check"></span><span>✅ Yeah — I've got something I'd demo</span></label>
+      <label class="option radio"><input type="radio" name="present" value="Not yet — building something"><span class="check"></span><span>🔜 Not yet, but I'm building something</span></label>
+      <label class="option radio"><input type="radio" name="present" value="Rather just watch"><span class="check"></span><span>👀 I'd rather just watch for now</span></label>
+    </div>
+
+    <div class="question">
+      <h2>Anything else?</h2>
+      <p class="hint">Topics, ideas, feedback — whatever's on your mind</p>
+      <textarea name="freeform" placeholder="Optional"></textarea>
+    </div>
+
+    <div class="question">
+      <h2>Name (optional)</h2>
+      <input type="text" class="name-input" name="name" placeholder="So we know who to follow up with">
+    </div>
+
+    <button type="submit" id="submit-btn">Submit</button>
+  </form>
+</div>
+
+<div class="container success" id="success-container" style="display:none;">
+  <h1>Thanks! 🚀</h1>
+  <p>Your feedback has been submitted. See you at the next session.</p>
+</div>
+
+<script>
+const REPO = 'KalebCole/new-grad-builders';
+
+document.getElementById('survey-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const errorEl = document.getElementById('error-msg');
+  errorEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const form = e.target;
+  const data = {
+    topics: [...form.querySelectorAll('input[name="topics"]:checked')].map(i => i.value),
+    format: form.querySelector('input[name="format"]:checked')?.value || '',
+    segments: [...form.querySelectorAll('input[name="segments"]:checked')].map(i => i.value),
+    present: form.querySelector('input[name="present"]:checked')?.value || '',
+    freeform: form.querySelector('textarea[name="freeform"]').value.trim(),
+    name: form.querySelector('input[name="name"]').value.trim(),
+    submitted: new Date().toISOString()
+  };
+
+  // Build issue body as markdown
+  let body = `## Survey Response\n\n`;
+  body += `**Submitted:** ${data.submitted}\n`;
+  if (data.name) body += `**Name:** ${data.name}\n`;
+  body += `\n### Topics of Interest\n${data.topics.length ? data.topics.map(t => `- ${t}`).join('\n') : '_None selected_'}\n`;
+  body += `\n### Preferred Format\n${data.format || '_None selected_'}\n`;
+  body += `\n### Recurring Segments\n${data.segments.length ? data.segments.map(s => `- ${s}`).join('\n') : '_None selected_'}\n`;
+  body += `\n### Show & Tell\n${data.present || '_None selected_'}\n`;
+  if (data.freeform) body += `\n### Other Feedback\n${data.freeform}\n`;
+
+  const title = `Survey: ${data.name || 'Anonymous'} — ${new Date().toLocaleDateString()}`;
+
+  try {
+    // Open a pre-filled GitHub Issue — user clicks Submit on GitHub
+    // They already have GitHub accounts from the Copilot prereq
+    const issueUrl = `https://github.com/${REPO}/issues/new?` + new URLSearchParams({
+      title: title,
+      body: body,
+      labels: 'survey-response'
+    }).toString();
+
+    window.open(issueUrl, '_blank');
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('success-container').style.display = 'block';
+  } catch (err) {
+    errorEl.textContent = `Error: ${err.message}. Please screenshot this form and send to Kaleb.`;
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+  }
+});
+</script>
+</body>
+</html>
