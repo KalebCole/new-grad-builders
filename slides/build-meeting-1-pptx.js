@@ -37,12 +37,12 @@ const slideDefinitions = [
     notes: '"Here\'s what we\'re building today. Every layer is free or effectively free. GitHub Copilot — unlimited through Microsoft. Azure VM — covered by your $150/mo credits. OpenClaw — open source. Telegram, Tailscale, gogcli — all free."\n\nTiming: ~1 minute.'
   },
   {
-    file: '05-security.html',
-    notes: '"Before we create anything, let\'s talk about security. When you create an Azure VM, it gets a public IP. Port 22 is open. Anyone on the internet can try to brute-force SSH. That\'s the default. So here\'s what the setup script does to fix that."\n\nWalk through each:\n1. SSH Hardening — no root login, key-only auth, AllowUsers whitelist, 3 max attempts, modern crypto only\n2. UFW Firewall — deny all inbound except SSH. After Tailscale, tighten to VPN only\n3. fail2ban — auto-bans IPs after failed SSH attempts\n4. Azure Metadata Lockdown — blocks non-root from querying the Instance Metadata Service\n5. User isolation — dedicated openclaw user, no sudo, no docker\n6. systemd LoadCredential — secrets on root, injected via tmpfs at runtime\n7. Process Sandboxing — NoNewPrivileges, ProtectSystem=strict, PrivateTmp\n8. Tailscale — WireGuard mesh VPN, no public SSH needed\n\n"I\'m still learning security too. But the goal isn\'t perfect — it\'s not being the low-hanging fruit."\n\nTiming: ~5-6 minutes. This is the core teaching section.'
+    file: '05-create-vm.html',
+    notes: '"Now let\'s create the VM. Two commands. Resource group, then the VM itself."\n\nRun create-vm.sh or paste the commands. Wait for it to complete (~1-2 min).\n\n"See that public IP? Right now, anyone on the internet can try to SSH into this. That\'s why we did the security talk first."\n\nTiming: ~3-4 minutes (including wait time).'
   },
   {
-    file: '06-create-vm.html',
-    notes: '"Now let\'s create the VM. Two commands. Resource group, then the VM itself."\n\nRun create-vm.sh or paste the commands. Wait for it to complete (~1-2 min).\n\n"See that public IP? Right now, anyone on the internet can try to SSH into this. That\'s why we did the security talk first."\n\nTiming: ~3-4 minutes (including wait time).'
+    file: '06-security.html',
+    notes: '"Before we create anything, let\'s talk about security. When you create an Azure VM, it gets a public IP. Port 22 is open. Anyone on the internet can try to brute-force SSH. That\'s the default. So here\'s what the setup script does to fix that."\n\nWalk through each:\n1. SSH Hardening — no root login, key-only auth, AllowUsers whitelist, 3 max attempts, modern crypto only\n2. UFW Firewall — deny all inbound except SSH. After Tailscale, tighten to VPN only\n3. fail2ban — auto-bans IPs after failed SSH attempts\n4. Azure Metadata Lockdown — blocks non-root from querying the Instance Metadata Service\n5. User isolation — dedicated openclaw user, no sudo, no docker\n6. systemd LoadCredential — secrets on root, injected via tmpfs at runtime\n7. Process Sandboxing — NoNewPrivileges, ProtectSystem=strict, PrivateTmp\n8. Tailscale — WireGuard mesh VPN, no public SSH needed\n\n"I\'m still learning security too. But the goal isn\'t perfect — it\'s not being the low-hanging fruit."\n\nTiming: ~5-6 minutes. This is the core teaching section.'
   },
   {
     file: '07-bootstrap.html',
