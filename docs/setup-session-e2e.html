@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw VM Setup Session — 2026-03-05</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --orange: #d29922;
+    --purple: #bc8cff;
+    --user-bg: #1c2333;
+    --assistant-bg: #161b22;
+    --code-bg: #0d1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 3rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .header h1 span { color: var(--orange); }
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  .header .tags {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .tag {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .tag.green { border-color: var(--green); color: var(--green); }
+  .tag.orange { border-color: var(--orange); color: var(--orange); }
+  .tag.purple { border-color: var(--purple); color: var(--purple); }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .toc h2 { font-size: 1rem; color: var(--accent); margin-bottom: 0.75rem; }
+  .toc ol { padding-left: 1.5rem; }
+  .toc li { margin-bottom: 0.4rem; }
+  .toc a { color: var(--text-muted); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  .message {
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .message-header {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .message-body {
+    padding: 1rem 1.5rem;
+  }
+  .message.user .message-header {
+    background: rgba(88,166,255,0.15);
+    color: var(--accent);
+  }
+  .message.user .message-body {
+    background: var(--user-bg);
+    border: 1px solid rgba(88,166,255,0.2);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+  .message.assistant .message-header {
+    background: rgba(188,140,255,0.12);
+    color: var(--purple);
+  }
+  .message.assistant .message-body {
+    background: var(--assistant-bg);
+    border: 1px solid rgba(188,140,255,0.15);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .section-break {
+    text-align: center;
+    margin: 2.5rem 0;
+    position: relative;
+  }
+  .section-break::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-break span {
+    background: var(--bg);
+    padding: 0 1rem;
+    position: relative;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0.75rem 0;
+  }
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+  }
+
+  .result-box {
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.25);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+  .result-box.error {
+    background: rgba(248,81,73,0.08);
+    border-color: rgba(248,81,73,0.25);
+  }
+  .result-box.warn {
+    background: rgba(210,153,34,0.08);
+    border-color: rgba(210,153,34,0.25);
+  }
+
+  .check { color: var(--green); }
+  .cross { color: var(--red); }
+  .warn-text { color: var(--orange); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+  th, td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  th {
+    background: rgba(255,255,255,0.04);
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  h2 { font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text); }
+  h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; color: var(--text-muted); }
+  p { margin-bottom: 0.75rem; }
+  ul, ol { padding-left: 1.5rem; margin-bottom: 0.75rem; }
+  li { margin-bottom: 0.3rem; }
+  strong { color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .redacted {
+    background: rgba(248,81,73,0.15);
+    border: 1px dashed rgba(248,81,73,0.4);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.85em;
+    color: var(--red);
+  }
+  .step-num {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--bg);
+    width: 1.6em;
+    height: 1.6em;
+    line-height: 1.6em;
+    text-align: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+  }
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>OpenClaw VM Setup <span>E2E Session</span></h1>
+  <p class="subtitle">Azure VM + GitHub Copilot + Telegram Bot &mdash; 2026-03-05</p>
+  <div class="tags">
+    <span class="tag green">All Security Hardening Applied</span>
+    <span class="tag orange">GitHub Copilot / Claude Opus 4.6</span>
+    <span class="tag purple">Telegram @KalebVM2bot</span>
+  </div>
+</div>
+
+<div class="container">
+
+<nav class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">Create Azure VM</a></li>
+    <li><a href="#s2">Run Setup Script (setup-openclaw-vm.sh)</a></li>
+    <li><a href="#s3">Run Secret Proxy Script (setup-secret-proxy.sh)</a></li>
+    <li><a href="#s4">Research: GitHub Copilot Instead of Anthropic API</a></li>
+    <li><a href="#s5">Add Telegram Bot Token</a></li>
+    <li><a href="#s6">Authenticate GitHub Copilot (Device Flow)</a></li>
+    <li><a href="#s7">Set Model &amp; Configure Telegram Channel</a></li>
+    <li><a href="#s8">Fix systemd Service &amp; Start Gateway</a></li>
+    <li><a href="#s9">Upgrade to Opus 4.6 &amp; Security Audit</a></li>
+  </ol>
+</nav>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div class="section-break" id="s1"><span>1 &mdash; Create Azure VM</span></div>
+
+<div class="message user">
+  <div class="message-header">User</div>
+  <div class="message-body">
+    <p>Can you create the new Azure VM again and then give me the step by step on setting up this new bot in Telegram so I can do this e2e.</p>
+  </div>
+</div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Ran <code>demo/create-vm.sh</code> which provisions a Standard_B2ms Ubuntu 22.04 VM.</p>
+    <div class="result-box">
+<pre><code>============================================
+  New Grad Builders &mdash; Create Azure VM
+============================================
+
+Subscription: Visual Studio Enterprise Subscription
+
+[1/2] Creating resource group 'personal-agents' in westus2...
+  &check; Resource group ready
+[2/2] Creating VM 'openclaw-vm' (Standard_B2ms, Ubuntu2204)...
+  &check; VM created
+
+  Public IP: <span class="redacted">[REDACTED]</span></code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div class="section-break" id="s2"><span>2 &mdash; Run Setup Script</span></div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>SSH'd into the VM and ran <code>setup-openclaw-vm.sh</code> from the PR branch (with <code>tr -d '\r'</code> to strip CRLF). All 12 steps completed successfully:</p>
+    <div class="result-box">
+<pre><code>[1/12] Updating system packages...          &check;
+[2/12] Installing essential tools...         &check;
+[3/12] Installing Node.js 22 LTS...         &check;  (v22.22.0)
+[4/12] Installing OpenClaw...                &check;
+[5/12] Installing Chromium + Xvfb...         &check;
+[6/12] Creating dedicated 'openclaw' user... &check;
+[7/12] Setting up secrets management...      &check;
+[8/12] Creating OpenClaw systemd service...  &check;
+[9/12] Hardening SSH configuration...        &check;
+[10/12] Configuring firewall (UFW)...        &check;
+[11/12] Applying kernel hardening...         &check;
+[12/12] Final hardening + Tailscale...       &check;
+
+SECURITY SUMMARY:
+  SSH hardened (key-only, no root, modern crypto, 3 max attempts)
+  fail2ban active on SSH
+  UFW firewall (deny all inbound except SSH)
+  Azure metadata locked to root only (both IMDS + WireServer)
+  Kernel hardened (syncookies, no redirects, no source routing)
+  Dedicated openclaw user (no sudo, no docker)
+  Secrets in /etc/openclaw/secrets/ (root-owned, 600 perms)
+  systemd service with full sandboxing
+  Chromium + Xvfb + nodriver (stealth browser on display :99)
+  Automatic security updates enabled
+  Tailscale ready for VPN access</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<div class="section-break" id="s3"><span>3 &mdash; Run Secret Proxy Script</span></div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Ran <code>setup-secret-proxy.sh</code> &mdash; the optional per-command secret scoping proxy.</p>
+    <div class="result-box">
+<pre><code>[1/4] Creating secret proxy...
+  Proxy application written to /opt/secret-proxy/index.js
+  Logrotate configured for /var/log/openclaw/secret-proxy.log
+  secret-proxy.service enabled and started
+
+  &check; Secret Proxy Installed!</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<div class="section-break" id="s4"><span>4 &mdash; GitHub Copilot Instead of Anthropic API</span></div>
+
+<div class="message user">
+  <div class="message-header">User</div>
+  <div class="message-body">
+    <p>Instead of Anthropic API key &mdash; I want to use my GHCP subscription. How to do this?</p>
+  </div>
+</div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Researched options and discovered OpenClaw has <strong>built-in GitHub Copilot support</strong> via <code>openclaw models auth login-github-copilot</code>.</p>
+
+    <p>Checked available models:</p>
+    <div class="result-box">
+<pre><code>$ openclaw models list --all --provider github-copilot --plain
+
+github-copilot/claude-haiku-4.5
+github-copilot/claude-opus-4.5
+github-copilot/claude-opus-4.6
+github-copilot/claude-sonnet-4
+github-copilot/claude-sonnet-4.5
+github-copilot/claude-sonnet-4.6
+github-copilot/gemini-2.5-pro
+github-copilot/gemini-3-flash-preview
+github-copilot/gpt-4.1
+github-copilot/gpt-5
+github-copilot/gpt-5.1
+github-copilot/gpt-5.2
+...</code></pre>
+    </div>
+    <p>No need for a separate API key &mdash; the Copilot subscription covers all model access.</p>
+  </div>
+</div>
+
+<!-- ==================== SECTION 5 ==================== -->
+<div class="section-break" id="s5"><span>5 &mdash; Add Telegram Bot Token</span></div>
+
+<div class="message user">
+  <div class="message-header">User</div>
+  <div class="message-body">
+    <p>Yes I will give you the bot token here: <span class="redacted">[REDACTED_TOKEN]</span></p>
+  </div>
+</div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Saved the Telegram bot token to <code>/etc/openclaw/secrets/telegram_token</code> with 600 permissions.</p>
+    <div class="result-box">
+<pre><code>$ echo '[REDACTED]' | sudo tee /etc/openclaw/secrets/telegram_token
+$ sudo chmod 600 /etc/openclaw/secrets/telegram_token
+Telegram token saved</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 6 ==================== -->
+<div class="section-break" id="s6"><span>6 &mdash; GitHub Copilot Device Auth</span></div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Ran <code>openclaw models auth login-github-copilot --yes</code> on the VM as the <code>openclaw</code> user. This uses GitHub's device flow (same as signing into VS Code).</p>
+
+    <p>The command generated a device code. After two expired attempts, the third succeeded:</p>
+
+    <div class="result-box">
+<pre><code>GitHub Copilot login
+
+&check; Device code ready
+&check; Authorize
+  Visit: https://github.com/login/device
+  Code:  EE73-0B4A
+
+  Waiting for GitHub authorization...
+  &check; GitHub access token acquired
+
+Updated ~/.openclaw/openclaw.json
+Auth profile: github-copilot:github (github-copilot/token)
+  Done</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 7 ==================== -->
+<div class="section-break" id="s7"><span>7 &mdash; Set Model &amp; Configure Telegram</span></div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Set the default model and configured Telegram as a channel:</p>
+
+<pre><code>$ sudo -u openclaw openclaw models set github-copilot/claude-sonnet-4.6
+Default model: github-copilot/claude-sonnet-4.6
+
+$ sudo -u openclaw openclaw config set channels.telegram.botToken '[REDACTED]'
+Updated channels.telegram.botToken. Restart the gateway to apply.
+
+$ sudo -u openclaw openclaw config set channels.telegram.dmPolicy open
+$ sudo -u openclaw openclaw config set channels.telegram.allowFrom '["*"]'
+$ sudo -u openclaw openclaw config set gateway.mode local</code></pre>
+
+    <p>Key config decisions:</p>
+    <ul>
+      <li><code>dmPolicy: open</code> &mdash; anyone can DM the bot (for testing)</li>
+      <li><code>allowFrom: ["*"]</code> &mdash; wildcard access (lock down later with specific Telegram user IDs)</li>
+      <li><code>gateway.mode: local</code> &mdash; required for the gateway to start without wide-area discovery</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== SECTION 8 ==================== -->
+<div class="section-break" id="s8"><span>8 &mdash; Fix systemd Service &amp; Start Gateway</span></div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Hit several issues getting the systemd service running with the new config:</p>
+
+    <table>
+      <thead>
+        <tr><th>Issue</th><th>Cause</th><th>Fix</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>exit 243/CREDENTIALS</td>
+          <td><code>LoadCredential=anthropic_key</code> referenced a file that doesn't exist (using GHCP instead)</td>
+          <td>Commented out the anthropic_key LoadCredential line</td>
+        </tr>
+        <tr>
+          <td>exit 200/CHDIR</td>
+          <td><code>ProtectHome=true</code> blocked access to <code>/home/openclaw</code></td>
+          <td>Changed to <code>ProtectHome=false</code> (ReadWritePaths still enforced)</td>
+        </tr>
+        <tr>
+          <td>exit 226/NAMESPACE</td>
+          <td><code>ProtectHome=tmpfs</code> conflicted with mount namespacing on this kernel version</td>
+          <td>Resolved by using <code>ProtectHome=false</code></td>
+        </tr>
+        <tr>
+          <td>"unknown command 'start'"</td>
+          <td><code>openclaw start</code> not a valid subcommand (v2026.3.2)</td>
+          <td>Changed ExecStart to <code>openclaw gateway --port 18789</code></td>
+        </tr>
+        <tr>
+          <td>"Gateway start blocked"</td>
+          <td>Missing <code>gateway.mode=local</code> config</td>
+          <td>Set via <code>openclaw config set gateway.mode local</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>After all fixes, the gateway started successfully:</p>
+
+    <div class="result-box">
+<pre><code>openclaw.service - OpenClaw AI Assistant
+  Active: active (running)
+
+[canvas]     host mounted at http://[LOCALHOST]:18789/__openclaw__/canvas/
+[heartbeat]  started
+[gateway]    agent model: github-copilot/claude-sonnet-4.6
+[gateway]    listening on ws://[LOCALHOST]:18789 (PID 13713)
+[browser]    Browser control listening on http://[LOCALHOST]:18791/
+[telegram]   [default] starting provider (@KalebVM2bot)</code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 9 ==================== -->
+<div class="section-break" id="s9"><span>9 &mdash; Upgrade to Opus 4.6 &amp; Security Audit</span></div>
+
+<div class="message user">
+  <div class="message-header">User</div>
+  <div class="message-body">
+    <p>Make it Claude Opus 4.6 please. Also does this have all the security built in or is this publicly exposed port?</p>
+  </div>
+</div>
+
+<div class="message assistant">
+  <div class="message-header">Claude</div>
+  <div class="message-body">
+    <p>Switched model:</p>
+<pre><code>$ sudo -u openclaw openclaw models set github-copilot/claude-opus-4.6
+Default model: github-copilot/claude-opus-4.6</code></pre>
+
+    <p>Ran a full security audit &mdash; <strong>all hardening from the setup scripts is active:</strong></p>
+
+    <table>
+      <thead><tr><th>Check</th><th>Status</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>UFW Firewall</td><td class="check">&check;</td><td>deny incoming, allow outgoing, deny routed. Only SSH (22) allowed in.</td></tr>
+        <tr><td>Gateway Ports</td><td class="check">&check;</td><td>18789, 18791, 18792 all bound to <strong>localhost only</strong> &mdash; not publicly exposed.</td></tr>
+        <tr><td>IMDS Blocked</td><td class="check">&check;</td><td>Both 169.254.169.254 and 168.63.129.16 DROP rules for non-root users.</td></tr>
+        <tr><td>Kernel Hardening</td><td class="check">&check;</td><td>tcp_syncookies=1, accept_redirects=0</td></tr>
+        <tr><td>SSH Hardening</td><td class="check">&check;</td><td>Key-only auth, no root login, modern crypto, MaxAuthTries 3</td></tr>
+        <tr><td>fail2ban</td><td class="check">&check;</td><td>Active on SSH</td></tr>
+        <tr><td>User Isolation</td><td class="check">&check;</td><td>Dedicated <code>openclaw</code> user, no sudo, no docker</td></tr>
+        <tr><td>Secret Proxy</td><td class="check">&check;</td><td>Per-command secret scoping, rate limited, audit logged</td></tr>
+        <tr><td>Unattended Upgrades</td><td class="check">&check;</td><td>Automatic security patches enabled</td></tr>
+      </tbody>
+    </table>
+
+    <p>The Telegram bot works via <strong>outbound long-polling</strong> &mdash; OpenClaw reaches out to Telegram's API servers. No inbound port is needed or exposed.</p>
+
+    <p><strong>Only remaining step:</strong> Lock SSH to Tailscale-only after connecting:</p>
+<pre><code>sudo tailscale up
+sudo ufw delete allow ssh
+sudo ufw allow from 100.64.0.0/10 to any port 22</code></pre>
+  </div>
+</div>
+
+<!-- ==================== ARCHITECTURE SUMMARY ==================== -->
+<div class="section-break"><span>Architecture Summary</span></div>
+
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+<pre style="border: none; background: none; margin: 0; color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">
+                        Internet
+                           |
+                    +--------------+
+                    |  Azure NSG   |  (only port 22 open)
+                    +--------------+
+                           |
+                    +--------------+
+                    |   UFW        |  deny incoming / allow outgoing / deny routed
+                    |   + fail2ban |  (SSH brute force protection)
+                    +--------------+
+                           |
+              +------------+------------+
+              |                         |
+      +-------+-------+        +-------+-------+
+      |  SSH (port 22) |        | OpenClaw GW   |
+      |  key-only auth |        | localhost:18789|
+      |  no root       |        | (NOT public)  |
+      +----------------+        +-------+-------+
+                                        |
+                              +---------+---------+
+                              |                   |
+                       +------+------+    +-------+-------+
+                       |  Telegram   |    | GitHub Copilot|
+                       |  (outbound  |    | Claude Opus   |
+                       |   polling)  |    | 4.6           |
+                       +-------------+    +---------------+
+
+      Secrets: /etc/openclaw/secrets/ (root:root, 700)
+      Proxy:   /run/openclaw/secret-proxy.sock (per-command scoping)
+      User:    openclaw (no sudo, no docker, sandboxed systemd)
+      IMDS:    Both endpoints DROP'd for non-root
+      Kernel:  syncookies, no redirects, no source routing, rp_filter
+</pre>
+</div>
+
+<!-- ==================== FINAL CONFIG ==================== -->
+<div class="section-break"><span>Final Configuration</span></div>
+
+<div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem;">
+  <h3 style="margin-top: 0;">openclaw.json (key fields)</h3>
+<pre><code>{
+  "auth": {
+    "profiles": {
+      "github-copilot:github": {
+        "provider": "github-copilot",
+        "mode": "token"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "github-copilot/claude-opus-4.6"
+      }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "botToken": "<span class="redacted">[REDACTED]</span>",
+      "dmPolicy": "open",
+      "allowFrom": ["*"]
+    }
+  },
+  "gateway": {
+    "mode": "local"
+  }
+}</code></pre>
+
+  <h3>openclaw.service (final)</h3>
+<pre><code>[Service]
+Type=simple
+User=openclaw
+Group=openclaw
+WorkingDirectory=/home/openclaw
+Environment=DISPLAY=:99
+# LoadCredential=anthropic_key  (commented out &mdash; using GHCP)
+LoadCredential=telegram_token:/etc/openclaw/secrets/telegram_token
+ExecStart=/usr/bin/openclaw gateway --port 18789
+Restart=on-failure
+RestartSec=10
+
+# Sandboxing
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=false
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+ReadWritePaths=/home/openclaw</code></pre>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  <p>Generated by Claude Code (Opus 4.6) &mdash; 2026-03-05</p>
+  <p>Sensitive data (IP addresses, tokens) have been redacted.</p>
+</div>
+
+</body>
+</html>
