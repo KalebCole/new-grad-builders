@@ -4,6 +4,7 @@
 # Run as root or with sudo
 
 set -euo pipefail
+export DEBIAN_FRONTEND=noninteractive
 
 echo "============================================"
 echo "  New Grad Builders — OpenClaw VM Setup"
@@ -11,35 +12,47 @@ echo "============================================"
 echo ""
 
 # --- 1. System updates ---
-echo "[1/11] Updating system packages..."
-apt-get update -qq && apt-get upgrade -y -qq
+echo "[1/12] Updating system packages..."
+apt-get update -qq
+apt-get upgrade -y -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 # --- 2. Install essentials ---
-echo "[2/11] Installing essential tools..."
+echo "[2/12] Installing essential tools..."
+# Preseed iptables-persistent to avoid interactive prompts
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
 apt-get install -y -qq \
   curl wget git unzip jq htop tmux \
   build-essential ca-certificates gnupg lsb-release \
-  fail2ban iptables-persistent
+  fail2ban iptables-persistent \
+  unattended-upgrades chrony
 
-# --- 3. Install Node.js 20 ---
-echo "[3/11] Installing Node.js 20 LTS..."
-if ! command -v node &>/dev/null; then
-  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+# Enable automatic security updates
+cat > /etc/apt/apt.conf.d/20auto-upgrades << 'AUTOUPDATE'
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+AUTOUPDATE
+systemctl enable --now unattended-upgrades
+
+# --- 3. Install Node.js 22 ---
+echo "[3/12] Installing Node.js 22 LTS..."
+if ! command -v node &>/dev/null || [[ "$(node --version)" != v22* ]]; then
+  curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
   apt-get install -y -qq nodejs
 fi
 echo "  Node.js $(node --version) installed"
 echo "  npm $(npm --version) installed"
 
 # --- 4. Install OpenClaw ---
-echo "[4/11] Installing OpenClaw..."
+echo "[4/12] Installing OpenClaw..."
 npm install -g openclaw
 echo "  OpenClaw $(openclaw --version 2>/dev/null || echo 'installed') ready"
 
 # --- 5. Install Chromium + Xvfb + nodriver (headed browser on a headless VM) ---
-echo "[5/11] Installing Chromium + Xvfb + nodriver..."
+echo "[5/12] Installing Chromium + Xvfb + nodriver..."
 apt-get install -y -qq xvfb python3-pip
 snap install chromium
-pip3 install --quiet nodriver>=0.38
+pip3 install --quiet --break-system-packages "nodriver>=0.38" || pip3 install --quiet "nodriver>=0.38"
 # Create a systemd service for Xvfb so the virtual display persists
 cat > /etc/systemd/system/xvfb.service << 'XVFB'
 [Unit]
@@ -57,13 +70,13 @@ WantedBy=multi-user.target
 XVFB
 systemctl daemon-reload
 systemctl enable --now xvfb
-echo "  Chromium $(chromium --version 2>/dev/null || echo 'installed')"
+echo "  Chromium $(snap list chromium 2>/dev/null | tail -1 | awk '{print $2}' || echo 'installed')"
 echo "  nodriver $(pip3 show nodriver 2>/dev/null | grep Version | cut -d' ' -f2 || echo 'installed')"
 echo "  Xvfb running on display :99"
 echo "  TIP: Set DISPLAY=:99 for headed browser automation"
 
 # --- 6. Create dedicated openclaw user ---
-echo "[6/11] Creating dedicated 'openclaw' user..."
+echo "[6/12] Creating dedicated 'openclaw' user..."
 if ! id -u openclaw &>/dev/null; then
   useradd -m -s /bin/bash -r openclaw
   echo "  User 'openclaw' created (system user)"
@@ -75,8 +88,8 @@ fi
 chmod 700 /root
 chmod 600 /root/.bashrc /root/.profile 2>/dev/null || true
 
-# --- 6. Secrets management (systemd LoadCredential) ---
-echo "[7/11] Setting up secrets management..."
+# --- 7. Secrets management (systemd LoadCredential) ---
+echo "[7/12] Setting up secrets management..."
 mkdir -p /etc/openclaw/secrets
 chmod 700 /etc/openclaw
 chmod 700 /etc/openclaw/secrets
@@ -86,18 +99,20 @@ chown root:root /etc/openclaw /etc/openclaw/secrets
 cat > /etc/openclaw/secrets/.env.template << 'TEMPLATE'
 # Add secrets as individual files in this directory.
 # Example:
-#   echo "sk-your-key" > /etc/openclaw/secrets/anthropic_key
-#   chmod 600 /etc/openclaw/secrets/anthropic_key
+#   echo "sk-your-key" | sudo tee /etc/openclaw/secrets/anthropic_key
+#   sudo chmod 600 /etc/openclaw/secrets/anthropic_key
 #
 # These get loaded via systemd LoadCredential into the openclaw service.
 # The openclaw user NEVER has direct filesystem access to these files.
 #
 # Supported secret files:
-#   anthropic_key       - Anthropic API key
+#   anthropic_key       - Anthropic API key (required)
 #   openrouter_key      - OpenRouter API key
-#   telegram_token      - Telegram bot token
+#   telegram_token      - Telegram bot token (required for Telegram)
 #   github_pat          - GitHub personal access token
 #   openai_key          - OpenAI API key
+#   todoist_key         - Todoist API key
+#   ynab_key            - YNAB API key
 TEMPLATE
 chmod 600 /etc/openclaw/secrets/.env.template
 
@@ -122,8 +137,8 @@ chmod 700 /root/inject-env.sh
 echo "  Secrets directory ready at /etc/openclaw/secrets/"
 echo "  Manual injection script at /root/inject-env.sh"
 
-# --- 7. OpenClaw systemd service (with sandboxing) ---
-echo "[8/11] Creating OpenClaw systemd service..."
+# --- 8. OpenClaw systemd service (with sandboxing) ---
+echo "[8/12] Creating OpenClaw systemd service..."
 cat > /etc/systemd/system/openclaw.service << 'SERVICE'
 [Unit]
 Description=OpenClaw AI Assistant
@@ -152,8 +167,11 @@ RestartSec=10
 # --- Process Sandboxing ---
 NoNewPrivileges=true
 ProtectSystem=strict
+ProtectHome=true
 PrivateTmp=true
 ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
 ProtectControlGroups=true
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 
@@ -168,8 +186,8 @@ systemctl daemon-reload
 # Don't enable yet — user needs to add secrets and run onboard first
 echo "  openclaw.service created (not enabled yet — run onboard first)"
 
-# --- 8. SSH hardening ---
-echo "[9/11] Hardening SSH configuration..."
+# --- 9. SSH hardening ---
+echo "[9/12] Hardening SSH configuration..."
 cat > /etc/ssh/sshd_config.d/99-hardened.conf << 'SSHCONFIG'
 # New Grad Builders — SSH Hardening
 # Applied on top of default sshd_config
@@ -200,6 +218,9 @@ Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
 MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 SSHCONFIG
 
+# Also ensure PasswordAuthentication is off in the main config (belt and suspenders)
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config 2>/dev/null || true
+
 # Validate config before restarting
 if sshd -t 2>/dev/null; then
   systemctl restart sshd
@@ -209,11 +230,12 @@ else
   rm -f /etc/ssh/sshd_config.d/99-hardened.conf
 fi
 
-# --- 9. Configure UFW firewall ---
-echo "[10/11] Configuring firewall (UFW)..."
+# --- 10. Configure UFW firewall ---
+echo "[10/12] Configuring firewall (UFW)..."
 apt-get install -y -qq ufw
 ufw default deny incoming
 ufw default allow outgoing
+ufw default deny routed
 ufw allow ssh
 echo "y" | ufw enable
 echo "  Firewall active — all inbound blocked except SSH (22)"
@@ -221,15 +243,46 @@ echo "  TIP: After setting up Tailscale, tighten SSH to Tailscale only:"
 echo "       sudo ufw delete allow ssh"
 echo "       sudo ufw allow from 100.64.0.0/10 to any port 22"
 
-# --- 10. Azure metadata + fail2ban + Tailscale ---
-echo "[11/11] Final hardening + Tailscale..."
+# --- 11. Kernel hardening (sysctl) ---
+echo "[11/12] Applying kernel hardening..."
+cat > /etc/sysctl.d/99-hardened.conf << 'SYSCTL'
+# Reverse-path filtering (loose mode)
+net.ipv4.conf.all.rp_filter = 2
+net.ipv4.conf.default.rp_filter = 2
+
+# Smurf attack protection
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# ICMP redirect attacks
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# Source routing
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+
+# SYN flood protection
+net.ipv4.tcp_syncookies = 1
+SYSCTL
+sysctl -p /etc/sysctl.d/99-hardened.conf
+echo "  Kernel hardening applied (syncookies, no redirects, no source routing)"
+
+# --- 12. Azure metadata + fail2ban + Tailscale ---
+echo "[12/12] Final hardening + Tailscale..."
 
 # Azure metadata endpoint lockdown — prevent non-root from querying IMDS
-# This blocks SSRF attacks from reaching the Azure Instance Metadata Service
-iptables -A OUTPUT -d 168.63.129.16 -m owner ! --uid-owner 0 -m state --state NEW -j DROP
-# Persist the rule across reboots
+# Block BOTH the IMDS endpoint (169.254.169.254) and the WireServer (168.63.129.16)
+if ! iptables -C OUTPUT -d 169.254.169.254 -m owner ! --uid-owner 0 -m state --state NEW -j DROP 2>/dev/null; then
+  iptables -A OUTPUT -d 169.254.169.254 -m owner ! --uid-owner 0 -m state --state NEW -j DROP
+fi
+if ! iptables -C OUTPUT -d 168.63.129.16 -m owner ! --uid-owner 0 -m state --state NEW -j DROP 2>/dev/null; then
+  iptables -A OUTPUT -d 168.63.129.16 -m owner ! --uid-owner 0 -m state --state NEW -j DROP
+fi
+# Persist the rules across reboots
 netfilter-persistent save 2>/dev/null || true
-echo "  Azure metadata endpoint locked down (root-only access)"
+echo "  Azure metadata endpoints locked down (root-only access)"
 
 # fail2ban (installed in step 2, just make sure it's enabled)
 systemctl enable --now fail2ban
@@ -245,19 +298,21 @@ fi
 
 echo ""
 echo "============================================"
-echo "  ✅ Setup Complete!"
+echo "  Setup Complete!"
 echo "============================================"
 echo ""
 echo "SECURITY SUMMARY:"
-echo "  ✓ SSH hardened (key-only, no root, modern crypto, 3 max attempts)"
-echo "  ✓ fail2ban active on SSH"
-echo "  ✓ UFW firewall (deny all inbound except SSH)"
-echo "  ✓ Azure metadata locked to root only"
-echo "  ✓ Dedicated openclaw user (no sudo, no docker)"
-echo "  ✓ Secrets in /etc/openclaw/secrets/ (root-owned, 600 perms)"
-echo "  ✓ systemd service with sandboxing (NoNewPrivileges, ProtectSystem)"
-echo "  ✓ Chromium + Xvfb + nodriver (stealth browser on display :99)"
-echo "  ✓ Tailscale ready for VPN access"
+echo "  SSH hardened (key-only, no root, modern crypto, 3 max attempts)"
+echo "  fail2ban active on SSH"
+echo "  UFW firewall (deny all inbound except SSH)"
+echo "  Azure metadata locked to root only (both IMDS + WireServer)"
+echo "  Kernel hardened (syncookies, no redirects, no source routing)"
+echo "  Dedicated openclaw user (no sudo, no docker)"
+echo "  Secrets in /etc/openclaw/secrets/ (root-owned, 600 perms)"
+echo "  systemd service with full sandboxing"
+echo "  Chromium + Xvfb + nodriver (stealth browser on display :99)"
+echo "  Automatic security updates enabled"
+echo "  Tailscale ready for VPN access"
 echo ""
 echo "NEXT STEPS:"
 echo ""
@@ -280,10 +335,10 @@ echo ""
 echo "  5. Enable and start the service:"
 echo "     sudo systemctl enable --now openclaw"
 echo ""
-echo "  6. Install an emergency coding agent on root:"
-echo "     npm install -g @anthropics/claude-code"
-echo "     # or: copilot-cli, opencode"
+echo "  6. (Optional) Install the secret proxy for per-command secret scoping:"
+echo "     sudo bash demo/setup-secret-proxy.sh"
 echo ""
-echo "  7. Install Termius on your phone for mobile SSH access"
+echo "  7. Install an emergency coding agent on root:"
+echo "     npm install -g @anthropic-ai/claude-code"
 echo ""
-echo "  Happy building! 🤖"
+echo "  Happy building!"

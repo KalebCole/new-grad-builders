@@ -36,6 +36,11 @@ if [ ! -d /etc/openclaw/secrets ]; then
   exit 1
 fi
 
+if ! command -v node &>/dev/null; then
+  echo "ERROR: Node.js not found. Run setup-openclaw-vm.sh first."
+  exit 1
+fi
+
 OPENCLAW_UID=$(id -u openclaw)
 
 # --- 1. Create the proxy directory ---
@@ -204,7 +209,20 @@ ReadOnlyPaths=/etc/openclaw/secrets /opt/secret-proxy
 WantedBy=multi-user.target
 SERVICE
 
-# --- 4. Enable and start ---
+# --- 4. Logrotate for audit log ---
+cat > /etc/logrotate.d/secret-proxy << 'LOGROTATE'
+/var/log/openclaw/secret-proxy.log {
+    weekly
+    rotate 4
+    compress
+    missingok
+    notifempty
+    create 0640 root root
+}
+LOGROTATE
+echo "  Logrotate configured for /var/log/openclaw/secret-proxy.log"
+
+# --- 5. Enable and start ---
 systemctl daemon-reload
 systemctl enable --now secret-proxy
 echo "  secret-proxy.service enabled and started"
