@@ -2,19 +2,38 @@
 
 > **Point your Copilot at this doc and say: "do this for me." Seriously, that's it.**
 
-## What You Need
+## Prerequisites (Do These Before the Session)
 
-- [ ] **Personal GitHub account** linked to Microsoft org — go to [aka.ms/copilot](https://aka.ms/copilot) and link your personal account
-- [ ] **GitHub Copilot** enabled — you get unlimited access through Microsoft, just make sure it's on at [github.com/settings/copilot](https://github.com/settings/copilot)
-- [ ] **Azure subscription** with free credits — check at [portal.azure.com](https://portal.azure.com) → Cost Management
-- [ ] **Telegram** on your phone ([telegram.org](https://telegram.org))
-- [ ] **SSH client** — Terminal (Mac/Linux), Windows Terminal, or [Termius](https://termius.com) on your phone
+### 1. Link GitHub Copilot (1 min)
+- Go to [aka.ms/copilot](https://aka.ms/copilot)
+- Link your **personal GitHub account** (NOT your EMU/work account)
+- This gives you unlimited Copilot access on any device — model access only, not Microsoft resources
+- Verify at [github.com/settings/copilot](https://github.com/settings/copilot)
 
-## Quick Start (5 minutes)
+### 2. Activate Azure $150/mo Credits (3 min)
+- Go to [my.visualstudio.com](https://my.visualstudio.com) — sign in with your **@microsoft.com** account
+- Find **Visual Studio Enterprise (FTE)** benefits
+- Click **Azure $150 monthly credit**
+- When prompted, use a **personal MSA** (outlook.com / hotmail.com) — **NOT** your @microsoft.com
+- Use an InPrivate/Incognito browser window
+- No credit card required
+- Verify at [portal.azure.com](https://portal.azure.com) → Cost Management
+
+### 3. Install Azure CLI (1 min)
+- [Install Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+- Run `az login` with the personal MSA you used for Azure credits
+
+### 4. Have an SSH Client Ready
+- Terminal (Mac/Linux), Windows Terminal, or [Termius](https://termius.com) on your phone
+
+## Quick Start (During/After the Session)
 
 ### 1. Create your Azure VM
 
 ```bash
+# Or run: bash demo/create-vm.sh
+az group create --name personal-agents --location westus2
+
 az vm create \
   --resource-group personal-agents \
   --name openclaw-vm \
@@ -28,7 +47,7 @@ az vm create \
 
 ```bash
 ssh azureuser@<your-vm-ip>
-curl -fsSL https://raw.githubusercontent.com/<your-username>/new-grad-builders/main/demo/setup-openclaw-vm.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/KalebCole/new-grad-builders/main/demo/setup-openclaw-vm.sh | sudo bash
 ```
 
 ### 3. Run OpenClaw onboarding
@@ -37,7 +56,14 @@ curl -fsSL https://raw.githubusercontent.com/<your-username>/new-grad-builders/m
 sudo /root/inject-env.sh openclaw onboard
 ```
 
-### 4. Set up Telegram bot
+### 4. Connect Tailscale (optional but recommended)
+
+```bash
+sudo tailscale up   # Follow the auth link
+tailscale ip -4      # Your private IP — SSH via this instead of public IP
+```
+
+### 5. Set up Telegram bot (after session)
 
 1. Open Telegram → message **@BotFather**
 2. Send `/newbot` → follow prompts → copy the bot token
@@ -46,7 +72,7 @@ sudo /root/inject-env.sh openclaw onboard
    sudo sh -c 'echo "TELEGRAM_BOT_TOKEN=<your-token>" >> /root/.openclaw-env'
    ```
 
-### 5. Connect Google Calendar (optional but cool)
+### 6. Connect Google Calendar (after session, optional but cool)
 
 Grab [gogcli](https://github.com/steipete/gogcli) — it puts Google Calendar, Gmail, Drive, Contacts, and Tasks in your terminal:
 
@@ -76,11 +102,12 @@ gcloud services enable gmail.googleapis.com --project my-openclaw-project
 gog account add --client-id <id> --client-secret <secret>
 ```
 
-### 6. Secure your VM
+### 7. Install emergency coding agent on root (after session)
 
-Setup already locks down the firewall and isolates users. Want extra credit?
 ```bash
-sudo tailscale up   # Mesh VPN — access your VM from anywhere securely
+# SSH as root, then install one of these:
+npm install -g @anthropics/claude-code
+# or: copilot-cli, opencode
 ```
 
 ## Now Go Break Stuff

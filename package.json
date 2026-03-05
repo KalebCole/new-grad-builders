@@ -1,0 +1,21 @@
+{
+  "name": "new-grad-builders",
+  "version": "1.0.0",
+  "description": "A community for Microsoft new grads who want to build with AI agents outside of work — and bring that back to the day job.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.58.2",
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.34.5"
+  }
+}

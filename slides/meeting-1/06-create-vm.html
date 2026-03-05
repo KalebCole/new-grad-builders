@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+html { background: #111111; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #111111;
+  font-family: Georgia, 'Times New Roman', serif;
+  display: flex; flex-direction: column;
+  color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+  <div style="margin: 40pt 40pt 10pt 40pt;">
+    <h1 style="font-size: 32pt; margin: 0;">Create the VM</h1>
+    <p style="font-size: 16pt; color: #999999; margin: 8pt 0 0 0;">Azure CLI &#8212; two commands</p>
+  </div>
+  <div style="background: #1A1A1A; margin: 15pt 40pt 10pt 40pt; padding: 18pt 22pt;">
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #999999; margin: 0 0 8pt 0;"># 1. Resource group</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 15pt 0;">az group create --name personal-agents --location westus2</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #999999; margin: 0 0 8pt 0;"># 2. Virtual machine</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0;">az vm create \</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 0 20pt;">--resource-group personal-agents \</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 0 20pt;">--name openclaw-vm \</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 0 20pt;">--image Ubuntu2204 \</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 0 20pt;">--size Standard_B2ms \</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 0 20pt;">--admin-username azureuser \</p>
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 12pt; color: #FFFFFF; margin: 0 0 0 20pt;">--generate-ssh-keys</p>
+  </div>
+  <div style="margin: 8pt 40pt 40pt 40pt;">
+    <p style="font-size: 12pt; color: #999999; margin: 0 0 4pt 0;">B2ms = 2 vCPU, 8GB RAM &#8212; ~$60/mo &#8212; well within your $150 free credits</p>
+    <p style="font-size: 12pt; color: #FFFFFF; margin: 0;">&#9888;&#65039; This creates a <span style="color: #FF6666;">public IP</span>. Port 22 is open to the internet right now.</p>
+  </div>
+</body>
+</html>

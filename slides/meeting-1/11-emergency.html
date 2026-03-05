@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+html { background: #111111; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #111111;
+  font-family: Georgia, 'Times New Roman', serif;
+  display: flex; flex-direction: column;
+  color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+  <div style="margin: 30pt 40pt 8pt 40pt;">
+    <h1 style="font-size: 28pt; margin: 0;">Emergency Access</h1>
+    <p style="font-size: 14pt; color: #999999; margin: 6pt 0 0 0;">When your agent breaks at 2 AM</p>
+  </div>
+  <div style="margin: 8pt 40pt 0 40pt; flex: 1;">
+    <div style="background: #1A1A1A; margin: 0 0 7pt 0; padding: 10pt 18pt;">
+      <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 4pt 0;">1. SSH from your phone</p>
+      <p style="font-size: 10pt; color: #999999; margin: 0;">Termius app &#8594; SSH to your Tailscale IP &#8594; log in as root</p>
+    </div>
+    <div style="background: #1A1A1A; margin: 0 0 7pt 0; padding: 10pt 18pt;">
+      <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 4pt 0;">2. Use a non-autonomous coding agent on root</p>
+      <p style="font-size: 10pt; color: #999999; margin: 0 0 4pt 0;">Copilot CLI, Claude Code, or opencode &#8212; installed on root, not the openclaw user</p>
+      <div style="background: #222222; margin: 4pt 0 0 0; padding: 8pt 12pt;">
+        <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 10pt; color: #FFFFFF; margin: 0;">$ copilot-cli</p>
+        <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 10pt; color: #999999; margin: 3pt 0 0 0;">&gt; "OpenClaw is stuck in a loop. Check the logs and fix it."</p>
+      </div>
+    </div>
+    <div style="background: #1A1A1A; margin: 0 0 7pt 0; padding: 10pt 18pt;">
+      <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 4pt 0;">3. The pattern</p>
+      <p style="font-size: 10pt; color: #999999; margin: 0;">OpenClaw tells you the error &#8594; you paste it into the coding agent &#8594; it debugs and fixes</p>
+    </div>
+  </div>
+  <div style="margin: 5pt 40pt 40pt 40pt; border-left: 2pt solid #999999;">
+    <p style="font-size: 11pt; color: #999999; font-style: italic; margin: 0 0 0 15pt;">You&#8217;re using an agent to fix an agent. Welcome to 2026.</p>
+  </div>
+</body>
+</html>

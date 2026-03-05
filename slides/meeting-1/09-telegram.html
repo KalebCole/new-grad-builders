@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+html { background: #111111; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #111111;
+  font-family: Georgia, 'Times New Roman', serif;
+  display: flex; flex-direction: column;
+  color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+  <div style="margin: 40pt 40pt 10pt 40pt;">
+    <h1 style="font-size: 32pt; margin: 0;">Telegram Bot</h1>
+    <p style="font-size: 16pt; color: #999999; margin: 8pt 0 0 0;">Give your agent a way to talk to you</p>
+  </div>
+  <div style="margin: 10pt 40pt 0 40pt; flex: 1;">
+    <div style="background: #1A1A1A; margin: 0 0 10pt 0; padding: 15pt 20pt;">
+      <p style="font-size: 14pt; color: #FFFFFF; margin: 0 0 6pt 0;">1. Create the bot</p>
+      <p style="font-size: 12pt; color: #999999; margin: 0;">Open Telegram &#8594; search <span style="font-family: 'Lucida Console', monospace; font-size: 11pt; color: #FFFFFF;">@BotFather</span> &#8594; send <span style="font-family: 'Lucida Console', monospace; font-size: 11pt; color: #FFFFFF;">/newbot</span> &#8594; follow prompts &#8594; copy the token</p>
+    </div>
+    <div style="background: #1A1A1A; margin: 0 0 10pt 0; padding: 15pt 20pt;">
+      <p style="font-size: 14pt; color: #FFFFFF; margin: 0 0 6pt 0;">2. Add the token to your VM</p>
+      <div style="background: #222222; margin: 6pt 0 0 0; padding: 10pt 14pt;">
+        <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 11pt; color: #FFFFFF; margin: 0;">echo 'your-token' | sudo tee /etc/openclaw/secrets/telegram_token</p>
+        <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 11pt; color: #FFFFFF; margin: 4pt 0 0 0;">sudo chmod 600 /etc/openclaw/secrets/telegram_token</p>
+      </div>
+    </div>
+    <div style="background: #1A1A1A; margin: 0 0 10pt 0; padding: 15pt 20pt;">
+      <p style="font-size: 14pt; color: #FFFFFF; margin: 0 0 6pt 0;">3. Talk to your agent</p>
+      <p style="font-size: 12pt; color: #999999; margin: 0;">Open the bot chat in Telegram &#8594; send a message &#8594; your agent responds</p>
+    </div>
+  </div>
+  <div style="margin: 5pt 40pt 25pt 40pt; border-left: 2pt solid #999999;">
+    <p style="font-size: 12pt; color: #999999; font-style: italic; margin: 0 0 0 15pt;">Why Telegram? Dedicated window. You don&#8217;t want your AI agent in your iMessages.</p>
+  </div>
+</body>
+</html>

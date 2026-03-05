@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+html { background: #111111; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #111111;
+  font-family: Georgia, 'Times New Roman', serif;
+  display: flex; flex-direction: column;
+  color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+  <div style="margin: 30pt 40pt 8pt 40pt;">
+    <h1 style="font-size: 30pt; margin: 0;">Bootstrap Script</h1>
+    <p style="font-size: 14pt; color: #999999; margin: 6pt 0 0 0;">One command installs everything</p>
+  </div>
+  <div style="background: #1A1A1A; margin: 8pt 40pt 10pt 40pt; padding: 12pt 18pt;">
+    <p style="font-family: 'Lucida Console', 'Consolas', monospace; font-size: 11pt; color: #FFFFFF; margin: 0;">curl -fsSL https://raw.githubusercontent.com/KalebCole/<br>new-grad-builders/main/demo/setup-openclaw-vm.sh | sudo bash</p>
+  </div>
+  <div style="margin: 0 40pt; flex: 1; display: flex; flex-direction: row;">
+    <div style="width: 310pt; margin-right: 10pt;">
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[1]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">System updates + essentials</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[2]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">Node.js 20 LTS</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[3]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">OpenClaw agent runtime</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[5]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">Chromium + Xvfb + nodriver (stealth browser)</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[6]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">Dedicated <span style="font-family: 'Lucida Console', monospace; font-size: 10pt;">openclaw</span> user</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[7]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">Secrets dir + systemd LoadCredential</p>
+      </div>
+    </div>
+    <div style="width: 310pt;">
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[8]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">systemd service + process sandboxing</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[9]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">SSH hardening (key-only, modern crypto)</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[10]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">UFW firewall (deny all except SSH)</p>
+      </div>
+      <div style="display: flex; flex-direction: row; margin: 0 0 4pt 0;">
+        <p style="font-size: 11pt; color: #999999; margin: 0; width: 32pt;">[11]</p>
+        <p style="font-size: 11pt; color: #FFFFFF; margin: 0;">Azure metadata lockdown + fail2ban + Tailscale</p>
+      </div>
+    </div>
+  </div>
+  <div style="margin: 5pt 40pt 20pt 40pt;">
+    <p style="font-size: 11pt; color: #999999; font-style: italic; margin: 0;">We&#8217;ll watch it run and explain each step as it goes.</p>
+  </div>
+</body>
+</html>

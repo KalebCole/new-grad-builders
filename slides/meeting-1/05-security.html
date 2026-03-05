@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+html { background: #111111; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #111111;
+  font-family: Georgia, 'Times New Roman', serif;
+  display: flex; flex-direction: column;
+  color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+  <div style="margin: 30pt 40pt 8pt 40pt;">
+    <h1 style="font-size: 30pt; margin: 0;">Security First</h1>
+    <p style="font-size: 14pt; color: #999999; margin: 6pt 0 0 0;">Before we create anything &#8212; what the setup script does and why</p>
+  </div>
+  <div style="margin: 8pt 40pt 0 40pt; flex: 1; display: flex; flex-direction: row;">
+    <div style="width: 310pt; margin-right: 10pt; display: flex; flex-direction: column;">
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F512; SSH Hardening</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">No root login, key-only auth, 3 max attempts, modern crypto only</p>
+      </div>
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F525; UFW Firewall</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">Deny all inbound except SSH. After Tailscale: SSH from VPN only</p>
+      </div>
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F6E1;&#xFE0F; fail2ban</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">Auto-bans IPs after failed SSH attempts</p>
+      </div>
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x2601;&#xFE0F; Azure Metadata Lockdown</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">Only root can query the Instance Metadata Service (blocks SSRF)</p>
+      </div>
+    </div>
+    <div style="width: 310pt; display: flex; flex-direction: column;">
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F464; User Isolation</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">openclaw user: no sudo, no docker. Blast radius containment.</p>
+      </div>
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F510; systemd LoadCredential</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">Secrets on root (chmod 600). Injected via tmpfs at runtime. Never on disk for the agent.</p>
+      </div>
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F3F0; Process Sandboxing</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">NoNewPrivileges, ProtectSystem=strict, PrivateTmp, restricted syscalls</p>
+      </div>
+      <div style="background: #1A1A1A; margin: 0 0 6pt 0; padding: 9pt 14pt;">
+        <p style="font-size: 13pt; color: #FFFFFF; margin: 0 0 2pt 0;">&#x1F310; Tailscale</p>
+        <p style="font-size: 10pt; color: #999999; margin: 0;">WireGuard mesh VPN. No public SSH needed once connected.</p>
+      </div>
+    </div>
+  </div>
+  <div style="margin: 5pt 40pt 20pt 40pt; border-left: 2pt solid #999999;">
+    <p style="font-size: 11pt; color: #999999; font-style: italic; margin: 0 0 0 15pt;">The goal isn&#8217;t perfect security. It&#8217;s not being the low-hanging fruit.</p>
+  </div>
+</body>
+</html>

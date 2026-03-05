@@ -13,10 +13,11 @@
 - **Content:** Context window pollution, determinism, piping CLIs vs MCP tool calls
 - **Reference:** Kaleb's Coding Agents 101 closing argument
 
-### 🎭 Playwright Browser Automation
+### 🎭 Browser Automation & Bot Bypass ✅ *Scheduled — Session 2*
 - **Format:** Workshop / live coding
-- **Content:** Automating internal Microsoft apps that require auth (MyExpense, ServiceNow, SharePoint)
-- **Key tech:** CDP connection to real Edge profile, bypassing login walls
+- **Content:** Why Playwright gets blocked by bot detection, how nodriver bypasses it, real-world car-buying use case
+- **Key tech:** nodriver (stealth CDP), reCAPTCHA fingerprinting, headed Chrome on VMs via Xvfb
+- **Materials:** `slides/session2-browser-automation.md`, `demo/browser-automation/`
 
 ### 🏆 "Automate Your Life" Challenge
 - **Format:** Hackathon-style, 1-2 week sprint
