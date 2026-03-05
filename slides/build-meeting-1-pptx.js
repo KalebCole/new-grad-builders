@@ -1,9 +1,9 @@
 /**
- * Build script: Convert Session 1 HTML slides to PowerPoint (.pptx)
+ * Build script: Convert Meeting 1 HTML slides to PowerPoint (.pptx)
  * Uses the html2pptx.js skill from the powerpoint agent skill.
  *
- * Usage: node slides/build-session1-pptx.js
- * Output: slides/session1.pptx
+ * Usage: node slides/build-meeting-1-pptx.js
+ * Output: slides/meeting-1.pptx
  */
 
 const pptxgen = require('pptxgenjs');
@@ -26,47 +26,55 @@ const slideDefinitions = [
   },
   {
     file: '02-agenda.html',
-    notes: 'Walk through the agenda quickly. "We\'re going to talk about security first, then create the VM, bootstrap it, and onboard OpenClaw. Tailscale and emergency access if we have time."\n\nTiming: ~30 seconds.'
+    notes: 'Walk through the agenda quickly. "We\'ll cover the state of AI, security, then hands-on: create the VM, bootstrap it, onboard OpenClaw, set up Telegram. Tailscale and emergency access if we have time."\n\nTiming: ~30 seconds.'
   },
   {
     file: '03-prereqs.html',
     notes: '"Quick check — did everyone link their Copilot and activate Azure credits? If not, do it now while I talk. The getting-started doc has step-by-step."\n\nKey points:\n- aka.ms/copilot for Copilot linking (personal GitHub, NOT EMU)\n- my.visualstudio.com for Azure credits (personal MSA, NOT @microsoft.com)\n- Azure CLI installed and logged in\n\nTiming: ~1.5 minutes.'
   },
   {
-    file: '04-stack.html',
-    notes: '"Here\'s what we\'re building today. Every layer is free or effectively free. GitHub Copilot — unlimited through Microsoft. Azure VM — covered by your $150/mo credits. OpenClaw — open source. Telegram, Tailscale, gogcli — all free."\n\nTiming: ~1 minute.'
+    file: '04-state-of-ai.html',
+    notes: '"Before we build, let me show you where this fits. Most of you use M365 Copilot — that\'s Tier 1, cloud AI. Chat, summarize, search. Then there are coding agents — Copilot CLI, Claude Code — they run on your machine, execute commands, but you\'re still driving. What we\'re building today is Tier 3: a proactive agent. It runs 24/7 on a VM, has a heartbeat, checks on tasks periodically, acts without being asked. Most people are at Tier 1. We\'re going to Tier 3 today."\n\nTiming: ~2-3 minutes.'
   },
   {
-    file: '05-create-vm.html',
-    notes: '"Now let\'s create the VM. Two commands. Resource group, then the VM itself."\n\nRun create-vm.sh or paste the commands. Wait for it to complete (~1-2 min).\n\n"See that public IP? Right now, anyone on the internet can try to SSH into this. That\'s why we did the security talk first."\n\nTiming: ~3-4 minutes (including wait time).'
+    file: '05-stack.html',
+    notes: '"Here\'s what we\'re building today. Every layer is free or effectively free. GitHub Copilot — unlimited through Microsoft. Azure VM — covered by your $150/mo credits. OpenClaw — open source. Telegram, Tailscale — all free."\n\nTiming: ~1 minute.'
   },
   {
-    file: '06-security.html',
-    notes: '"Before we create anything, let\'s talk about security. When you create an Azure VM, it gets a public IP. Port 22 is open. Anyone on the internet can try to brute-force SSH. That\'s the default. So here\'s what the setup script does to fix that."\n\nWalk through each:\n1. SSH Hardening — no root login, key-only auth, AllowUsers whitelist, 3 max attempts, modern crypto only\n2. UFW Firewall — deny all inbound except SSH. After Tailscale, tighten to VPN only\n3. fail2ban — auto-bans IPs after failed SSH attempts\n4. Azure Metadata Lockdown — blocks non-root from querying the Instance Metadata Service\n5. User isolation — dedicated openclaw user, no sudo, no docker\n6. systemd LoadCredential — secrets on root, injected via tmpfs at runtime\n7. Process Sandboxing — NoNewPrivileges, ProtectSystem=strict, PrivateTmp\n8. Tailscale — WireGuard mesh VPN, no public SSH needed\n\n"I\'m still learning security too. But the goal isn\'t perfect — it\'s not being the low-hanging fruit."\n\nTiming: ~5-6 minutes. This is the core teaching section.'
+    file: '06-create-vm.html',
+    notes: '"Now let\'s create the VM. Two commands. Resource group, then the VM itself."\n\nRun create-vm.sh or paste the commands. Wait for it to complete (~1-2 min).\n\n"See that public IP? Right now, anyone on the internet can try to SSH into this. That\'s why we\'re going to talk about security next."\n\nTiming: ~3-4 minutes (including wait time).'
   },
   {
-    file: '07-bootstrap.html',
-    notes: '"SSH in and run the bootstrap script. One curl command. Let\'s watch it run and I\'ll explain each step."\n\nSSH into the VM, then run the curl command. As it runs:\n- [1-2] System updates + essentials (includes fail2ban, iptables-persistent)\n- [3-4] Node.js + OpenClaw\n- [5] Chromium + Xvfb — "headed browser on a headless VM, display :99"\n- [6] Dedicated user — "blast radius containment"\n- [7] Secrets dir — "individual files, root-owned, systemd LoadCredential"\n- [8] systemd service — "NoNewPrivileges, ProtectSystem=strict, DISPLAY=:99"\n- [9] SSH hardening — "no root, key-only, AllowUsers, modern crypto"\n- [10] UFW — "deny all except SSH"\n- [11] Azure metadata lockdown + fail2ban + Tailscale\n\nTiming: ~8-10 minutes.'
+    file: '07-security.html',
+    notes: '"I\'m not a security engineer. But this thing probably has all my API keys, so I went through all this hardening so you don\'t have to."\n\n"I have a setup script for you all — take the parts you want. I wanted to explain it before anyone blindly runs it — build trust in what it does."\n\nWalk through each item. Goal: minimize blast radius. Don\'t be low-hanging fruit.\n\nClose with: "This is my implementation. Poke holes in it."\n\nTiming: ~5 minutes.'
   },
   {
-    file: '08-onboard.html',
-    notes: '"Now we run openclaw onboard. This creates the workspace files the agent reads every time it starts."\n\nRun the onboard command. Show the workspace:\n- USER.md — "who you are. Name, timezone, preferences."\n- AGENTS.md — "operating instructions. What to do, what not to do."\n- SOUL.md — "personality and boundaries. The more context, the less dumb it acts."\n\nTiming: ~6-7 minutes.'
+    file: '08-bootstrap.html',
+    notes: '"SSH in and run the bootstrap script. One curl command. Let\'s watch it run and I\'ll explain each step."\n\nSSH into the VM, then run the curl command. As it runs:\n- [1-2] System updates + essentials (includes fail2ban, iptables-persistent)\n- [3-4] Node.js + OpenClaw\n- [5] Chromium + Xvfb + nodriver — "stealth browser on a headless VM, display :99"\n- [6] Dedicated user — "blast radius containment"\n- [7] Secrets dir — "individual files, root-owned, systemd LoadCredential"\n- [8] systemd service — "NoNewPrivileges, ProtectSystem=strict, DISPLAY=:99"\n- [9] SSH hardening — "no root, key-only, AllowUsers, modern crypto"\n- [10] UFW — "deny all except SSH"\n- [11] Azure metadata lockdown + fail2ban + Tailscale\n\nTiming: ~8 minutes.'
   },
   {
-    file: '09-telegram.html',
-    notes: '"Now let\'s give the agent a way to talk to you. Open Telegram on your phone, search @BotFather, send /newbot, follow the prompts, copy the token."\n\nWait for everyone to do this (~2 min). Then:\n\n"Now paste the token into your VM."\n\nShow the commands:\n  echo \'your-token\' | sudo tee /etc/openclaw/secrets/telegram_token\n  sudo chmod 600 /etc/openclaw/secrets/telegram_token\n\n"Why Telegram? Dedicated window. You don\'t want your AI agent mixed in with your iMessages."\n\nTiming: ~4 minutes.'
+    file: '09-onboard.html',
+    notes: '"I used OpenClaw to set up OpenClaw. ClawCamp is a bootcamp-style setup guide from the AI Daily Brief podcast — it organizes setup into modules. I iterated through the modules using Edge TTS — talking to the agent via voice, agent executing setup steps."\n\nLive demo: screen share, have Edge TTS installed, point it at ClawCamp, let it iteratively configure itself.\n\nIMPORTANT CAVEAT: "The onboarding wizard installs the CLI tool, but my setup intentionally does NOT give OpenClaw access to its own API keys. This is a deliberate security friction layer — the agent can\'t use its own keys to install or modify things. This is a design choice."\n\nShow the workspace files: USER.md, AGENTS.md, SOUL.md.\n\nTiming: ~8 minutes.'
   },
   {
-    file: '10-tailscale.html',
+    file: '10-telegram.html',
+    notes: '"Now let\'s give the agent a way to talk to you. Open Telegram on your phone, search @BotFather, send /newbot, follow the prompts, copy the token."\n\nWait for everyone to do this (~2 min). Then:\n\n"Now paste the token into your VM."\n\n"Why Telegram? Dedicated window. You don\'t want your AI agent mixed in with your iMessages."\n\nTiming: ~4 minutes.'
+  },
+  {
+    file: '11-tailscale.html',
     notes: '"If we have time — Tailscale. Two commands: tailscale up, follow the auth link, done."\n\n"Now you have a private IP. You can SSH via 100.x.x.x instead of the public IP. You can even remove the public IP from Azure if you want."\n\n"Install Tailscale on your phone too. Termius + Tailscale = SSH from anywhere."\n\nTiming: ~3 minutes. Skip if running behind.'
   },
   {
-    file: '11-emergency.html',
+    file: '12-emergency.html',
     notes: '"Last thing — emergency access. When your agent breaks at 2 AM."\n\n"SSH from your phone as root. You have a non-autonomous coding agent there — Copilot CLI, Claude Code, whatever. Tell it to debug OpenClaw."\n\n"The pattern: OpenClaw tells you the error in Telegram. You copy it. You paste it into the coding agent. It debugs and fixes. You\'re using an agent to fix an agent."\n\nTiming: ~3 minutes. Skip if running behind.'
   },
   {
-    file: '12-resources.html',
+    file: '13-resources.html',
     notes: '"Everything is in the repo. Point your Copilot at the getting-started doc and say: do this for me. It will walk you through the rest — Google Calendar, data sources, whatever you want to set up."\n\n"You have free compute, free model access, and a weekend. Go build something."\n\nTiming: ~1 minute.'
+  },
+  {
+    file: '14-closing.html',
+    notes: '"Here\'s what\'s coming next — Session 2 will cover browser automation, data sources, and making your agent actually useful. Stay connected in the Teams channel. Share the repo with any new grad friends who\'d want to join."\n\n"Whatever this community becomes, it starts here."\n\nTiming: ~1 minute.'
   }
 ];
 
