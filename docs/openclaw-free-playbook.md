@@ -10,11 +10,9 @@
 
 ---
 
-## Before the Session (Do These First)
+## Step 0: Unlock Your Free Tools (5 min)
 
-These take 5-10 minutes and must be done before you can follow along live.
-
-### 1. Activate Azure $150/month Credits
+### 0a. Activate Azure $150/month Credits
 
 1. Go to [my.visualstudio.com](https://my.visualstudio.com) — sign in with your **@microsoft.com** account
 2. Find **Visual Studio Enterprise (FTE)** → click **Azure $150 monthly credit**
@@ -24,7 +22,7 @@ These take 5-10 minutes and must be done before you can follow along live.
 
 > ⚠️ The B2ms VM we'll create costs ~$60-70/month. Your credits cover it with room to spare.
 
-### 2. Link GitHub Copilot to Your Personal GitHub
+### 0b. Link GitHub Copilot to Your Personal GitHub
 
 1. Go to [aka.ms/copilot](https://aka.ms/copilot)
 2. Link your **personal GitHub account** (not your EMU/work account)
@@ -32,7 +30,7 @@ These take 5-10 minutes and must be done before you can follow along live.
 
 > This is your free LLM. OpenClaw will use GitHub Copilot as the model — no Anthropic/OpenAI key needed.
 
-### 3. Install Tools on Your Local Machine
+### 0c. Install Tools on Your Local Machine
 
 ```bash
 # Azure CLI
